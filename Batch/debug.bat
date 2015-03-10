@@ -1,0 +1,1 @@
+findconflcit.bat > debug.txt
