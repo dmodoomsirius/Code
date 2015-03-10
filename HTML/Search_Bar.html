@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en-US">
+<head>
+
+  	<style>
+    @charset "utf-8";
+/* CSS Document */
+
+/* ---------- ERIC MEYER'S RESET CSS ---------- */
+/* ---------- http://meyerweb.com/eric/tools/css/reset/ ---------- */
+
+@import url(http://meyerweb.com/eric/tools/css/reset/reset.css);
+
+/* ---------- GENERAL ---------- */
+
+body {
+	background-color: #61646d;
+	color: #000;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 14px;
+	line-height: 1.5em;
+}
+
+input, textarea {
+	background-color: #ccc;
+	border: none;
+	color: #000;
+	font-family: inherit;
+	font-size: 1em;
+	line-height: 1.5em;
+	margin: 0;
+	padding: 0;
+	-webkit-appearance: none;
+}
+
+/* ---------- SEARCH ---------- */
+
+.container {
+	margin: 50px auto;
+	width: 300px;
+}
+
+#search {
+	background-color: #42454e;
+	border-radius: 3px;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	display: inline-block;
+	padding: 7px;
+}
+
+#search input[type="text"] {
+	background-color: #fff;
+	border-radius: 3px;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	color: #42454e;
+	font-size: 12px;
+	min-width: 194px;
+	padding: 6px 8px;
+}
+
+#search input[type="submit"] {
+	background-color: #1bba9a;
+	border-radius: 3px;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	color: #fff;
+	font-size: 12px;
+	font-weight: bold;
+	margin-left: 3px;
+	padding: 6px 10px;
+	text-align: center;
+}
+
+#search input[type="text"]::-webkit-input-placeholder { color: #42454e; }
+#search input[type="text"]:-moz-placeholder { color: #42454e; }
+#search input[type="text"]:-ms-input-placeholder { color: #42454e; }  
+ 	</style>
+	<meta charset="utf-8">
+
+	<title>Search</title>
+
+	<link href="http://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" type="text/css">
+
+	<!--[if lt IE 9]>
+		<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+
+</head>
+
+<body>
+
+	<div class="container">
+		
+		<div id="search">
+
+			<form action="javascript:void(0);" method="GET">
+
+				<fieldset>
+
+					<input type="text" name="search" value="What are you looking for?" onBlur="if(this.value=='')this.value='What are you looking for?'" onFocus="if(this.value=='What are you looking for?')this.value='' "> <!-- JS because of IE support; better: placeholder="What are you looking for?" -->
+					<input type="submit" value="Search" class="button">
+
+				</fieldset>
+
+			</form>
+
+		</div>
+
+	</div>
+
+</body>	
+</html>

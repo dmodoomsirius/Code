@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html dir='ltr' class='no-js'>
+  <head>
+  	<meta charset='utf-8'>
+    <title>Example DropDown Menu Triggered with Hover/Click</title>
+    <style>
+      
+      * {
+        margin:0;
+        padding:0;
+      }
+      
+      body {
+        background-color:white;
+        font:normal normal 13px/1.4 Arial,Sans-Serif;
+        color:black;
+      }
+      
+      nav {
+        display:block;
+        height:40px;
+        line-height:40px;
+        background-color:black;
+      }
+      
+      /* Remove UA default style for list */
+      nav ul,
+      nav li {
+        list-style:none;
+        margin:0;
+        padding:0;
+        position:relative;
+      }
+      
+      nav li {
+        float:left;
+        display:inline;
+      }
+      
+      nav a {
+        display:block;
+        padding:0 1.5em;
+        color:white;
+        text-decoration:none;
+        font-weight:bold;
+      }
+      
+      nav a:hover, /* Global hover effect */
+      nav li:hover > a, /* Do not lose the hover effect on the parent menu as pointers move to its submenu(s) */
+      nav li a.active /* `.active` class via JavaScript */
+        {background-color:teal}
+      
+      /* Dropdown level 1 */
+      nav li ul {
+        position:absolute;
+        top:100%;
+        left:0;
+        z-index:999;
+        background-color:black;
+        width:200px;
+        display:none;
+      }
+      
+      nav li li {
+        float:none;
+        display:block;
+      }
+      
+      /* Dropdown level 2+ */
+      nav li ul ul {
+        top:0;
+        left:100%;
+      }
+      
+      /* Hover effect for disabled JavaScript */
+      .no-js nav li:hover > ul {display:block}
+      
+      /* Other */
+      p {padding:2em 2em 0}
+    </style>
+  </head>
+  <body>
+    <script>(function(h){h.className=h.className.replace(/(^| )no-js( |$)/,"$1js$2")})(document.documentElement);</script>
+
+	<nav>
+      <ul>
+        <li><a href="#">Home</a></li>
+        <li><a href="#">About</a>
+          <ul>
+            <li><a href="#">Submenu 1</a></li>
+            <li><a href="#">Submenu 2</a></li>
+            <li><a href="#">Submenu 3</a>
+              <ul>
+                <li><a href="#">Submenu 3.1</a></li>
+                <li><a href="#">Submenu 3.2</a></li>
+              </ul>
+            </li>
+            <li><a href="#">Submenu 4</a></li>
+          </ul>
+        </li>
+        <li><a href="#">Archive</a></li>
+        <li><a href="#">Contact</a></li>
+      </ul>
+    </nav>
+    <p><strong>Basic JQuery dropdown navigation menu for the the desktop and touch screen. Should be able to works on the touch screen device through the <code>mousedown</code> event :\</strong></p>
+    <p>Works with hover and toggle. Hover over the menu to show the submenus, or click the menu that has submenu to toggle show/hide the submenu.</p>
+    <script src='http://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js'></script>
+    <script>
+      (function($) {
+        var $nav = $('nav');
+        $nav.find('li').hover(function() {
+          $(this).children('ul').show() // Show the submenu
+          .prev().addClass('active'); // Add `active` class to parent menu link
+        }, function() {
+          $(this).children('ul').hide() // Hide the submenu
+          .prev().removeClass('active'); // Remove `active` class from parent menu link
+        }).children('a').filter(function() {
+            return $(this).next().is('ul'); // Filter to disable link that has an `ul` element after it (a submenu)
+        }).mousedown(function() {
+          $(this).toggleClass('active').next()[$(this).next().is(':hidden') ? "show" : "hide"](); // Toggle submenu on mousedown. Would be better if you use touchstart event or something similar
+          return false;
+        }).click(function() {
+          return false; // Disable link on click
+        });
+      })(jQuery);
+    </script>
+
+  </body>
+</html>
