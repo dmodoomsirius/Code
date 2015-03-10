@@ -1,3 +1,4 @@
+#Imports cloudbots hook
 from cloudbot import hook
 
 @hook.command("takingoff")
