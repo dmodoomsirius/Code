@@ -5,7 +5,7 @@ use warnings;
 # so we can use it both to open the file
 # and to refer to in an error message
 # if needed.
-my $file = "C:\\Users\\Mike\\temp.txt";
+my $file = "C:\\Users\\death\\temp.txt";
 
 # Use the open() function to create the file.
 unless(open FILE, '>'.$file) {
