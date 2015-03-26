@@ -1,19 +1,22 @@
 from cloudbot import hook
 
 
+               
 @hook.command("bbmstaff")
-def bbmStaff(text, message):
-    message("Owners: Dmodoomsirius, DarkGuardsman");
-    message("textureArtist: Morton0000");
-    message("Developers: Snow, Hennamann")
+def bbmStaff(text, message, chan):
+    if chan in ("#BBM-bots", "#BBM-Dev", "#BBM-Packs", "#BuiltBrokenModding", "#BuiltBroken"):
+                message("Owners: Dmodoomsirius, DarkGuardsman");
+                message("textureArtist: Morton0000");
+                message("Developers: Snow, Hennamann")
+    message("Command can only be run in Official BBM Channels. Join #bbm-bots to run the command.")
+
     
+    
+
 @hook.command("sponsor")
-def sponsor(text, message):
-    message("BuiltBroken servers both Beta test servers and build server");
-    message("is sponsored by Akliz.");
-    
-@hook.command("ICBM")
-def icbm(text, message):
-    message("ICBM was taken over by DarkCow from calclavia");
-    message("Downlaods can be found here http://builtbroken.com/pages/icbm/1.7/");
-    message("1.6.4 is not supported");
+def sponsor(text, message, chan):
+    if chan in ("#BBM-bots", "#BBM-Dev", "#BBM-Packs", "#BuiltBrokenModding", "#BuiltBroken"):
+                    message("BuiltBroken servers both Beta test servers and build server");
+                    message("is sponsored by Akliz.");
+                    message("http://www.akliz.net/bbm")
+    message("Command can only be run in Official BBM Channels. Join #bbm-bots to run the command.")

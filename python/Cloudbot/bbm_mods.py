@@ -11,3 +11,9 @@ def ve(text, message):
     message("VoltzEngine is the core of every builtbroken mod.")
     message("No it is not named after Voltz the modpack.")
     message("Downloads can be found here http://builtbroken.com/pages/voltzengine/1.7/downloads.php")
+    
+@hook.command("MadScience", "ms")
+def ms(text, message):
+    message("MadScience is a mod made by Maxwolf.")
+    message("The channel is #MadScience.")
+    message("The 1.7.10 version is not public.")
