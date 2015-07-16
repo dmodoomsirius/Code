@@ -1,0 +1,329 @@
+// -------------
+// START >> INIT
+// -------------
+
+// Enable download plugin.
+buildscript
+{
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'de.undercouch:gradle-download-task:1.2'
+    }
+}
+apply plugin: 'de.undercouch.download'
+apply plugin: 'java'
+
+// Import version strings from build.properties.
+ext.buildProps = file "build.properties"
+buildProps.withReader
+{
+    def prop = new Properties()
+    prop.load(it)
+    ext.config = new ConfigSlurper().parse prop
+}
+
+// Set build number to default if environment variable does not exist.
+if (System.getenv("BUILD_NUMBER") != null)
+{
+    ext.pack_version = "${config.packVersionMajor}.${config.packVersionMinor}.${System.getenv().BUILD_NUMBER}"
+}
+else
+{
+    ext.pack_version = "${config.packVersionMajor}.${config.packVersionMinor}.${config.packNonJenkinsBuild}"
+}
+
+// Define variables for fastcraft.
+def fastcraftURL = "http://files.player.to/fastcraft-${config.fastcraftVersion}.jar"
+def fastcraftOutput = "output/fastcraft-${config.fastcraftVersion}.jar"
+def fastcraftInOutput = "fastcraft-${config.fastcraftVersion}.jar"
+
+// -----------------
+// RUN DEFAULT TASKS
+// -----------------
+
+if (file(fastcraftOutput).isFile())
+{
+    defaultTasks "cleanup", "voltzclient", "voltzserver", "voltzSolder-config-client", "voltzSolder-config-server", "unzipClient", "unzipServer"
+}
+else
+{
+    defaultTasks "cleanup", "downloadFastcraft", "voltzclient", "voltzserver", "voltzSolder-config-client", "voltzSolder-config-server", "unzipClient", "unzipServer"
+}
+
+// -------------------------------
+// TASK: CLEAN UP OUTPUT DIRECTORY
+// -------------------------------
+
+task ("cleanup", type: Delete)
+{
+  delete fileTree(dir: "output", exclude: fastcraftInOutput)
+}
+
+// ------------------------
+// TASK: DOWNLOAD FASTCRAFT
+// ------------------------
+
+import de.undercouch.gradle.tasks.download.Download
+
+task ("downloadFastcraft", type: Download)
+{
+    src fastcraftURL
+    dest fastcraftOutput
+}
+
+// ------------------------
+// TASK: BUILD VOLTZ CLIENT
+// ------------------------
+
+task ("voltzclient", type: Zip)
+{
+    group = 'modpack'
+    description = 'Builds a Voltz client modpack zip'
+
+    // Grab all the files that make up a client installation.
+    from('.')
+    {
+        include 'bin/**'
+        include 'config/**'
+        include 'coremods/**'
+        include 'resourcepacks/**'
+        include 'texturepacks/**'
+        include 'mods/**'
+        include 'scripts/**'
+        include 'Flan/**'
+    }
+    
+    // Copy submodule configs into config folder.
+    into('config') {from fileTree('Voltz-Configs/config')}
+    into('scripts') {from fileTree('Voltz-Configs/scripts')}
+    into('config') {from fileTree('Voltz-Configs/clientconfig')}
+    
+    // Copy over default server for multiplayer menu.
+    from('./clientextra')
+    {
+        include '**/*.dat'
+    }
+
+    // Copy over client only mods into mods folder.
+    into('mods'){ from fileTree('clientmods') }
+    
+    // Copy over fastcraft into mods folder.
+    //into('mods'){ from fastcraftOutput}
+    
+    // Replace the CustomBranding config with our version information.
+    //String contents = new File( 'clientbranding/CustomBranding.cfg' ).getText( 'UTF-8' )
+    //contents = contents.replaceAll( '@VERSION@', pack_version )
+    
+    // Create the new file that will take its place.
+    //new File( 'config/CustomBranding.cfg' ).write(contents, 'UTF-8' )
+    
+    // Do not get empty directories from which no files are included.
+    includeEmptyDirs = false
+
+    // Info output.
+    eachFile { file -> logger.lifecycle "packing $file" }
+
+    // Create base filename for our creation.
+    destinationDir = file 'output'
+    baseName = "./${config.archivesBaseName}-$pack_version-client"
+
+    // Log creation of client zip.
+    doLast { logger.lifecycle "Voltz Client Created: $archivePath" }
+}
+
+// ------------------------
+// TASK: BUILD VOLTZ SERVER
+// ------------------------
+
+task ("voltzserver", type: Zip)
+{
+    group = 'modpack'
+    description = 'Builds a Voltz server modpack zip'
+
+    // Grab all the files that makeup a server installation.
+    from('.')
+    {
+        include 'config/**'
+        include 'coremods/**'
+        include 'mods/**'
+        include 'libraries/**'
+        include 'scripts/**'
+        include 'Flan/**'
+    }
+    
+    // Copy submodule configs into config folder.
+    into('config') {from fileTree('Voltz-Configs/config')}
+    into('scripts') {from fileTree('Voltz-Configs/scripts')}
+    into('config') {from fileTree('Voltz-Configs/serverconfig')}
+    
+    // Copy over server only mods.
+    into('mods'){ from fileTree('servermods') }
+    
+    // Copy over fastcraft into mods folder.
+    //into('mods'){ from fastcraftOutput}
+    
+    //Copy forge stuff into the server dir
+    into('') {from fileTree ('forgeFiles')}
+    
+    // Copy over MC server properties, whitelists, scripts, etc.
+    from('./serverextra')
+    {
+        include '**/**'
+    }
+    
+    // Do not get empty directories from which no files are included.
+    includeEmptyDirs = false
+
+    // Print out each file that we package into the mod pack.
+    eachFile { file -> logger.lifecycle "packing $file" }
+
+    // Create base filename for our creation.
+    destinationDir = file 'output'
+    baseName = "./${config.archivesBaseName}-$pack_version-server"
+
+    // Log creation of server zip.
+    doLast { logger.lifecycle "Voltz Server Created: $archivePath" }
+}
+
+// ------------------------
+// TASK: BUILD VOLTZ SERVER
+// ------------------------
+
+task ("voltzCauldserver", type: Zip)
+{
+    group = 'modpack'
+    description = 'Builds a Voltz server modpack zip'
+
+    // Grab all the files that makeup a server installation.
+    from('.')
+    {
+        include 'config/**'
+        include 'coremods/**'
+        include 'mods/**'
+        include 'scripts/**'
+        include 'Flan/**'
+        include 'libraries/**'
+    }
+    
+    // Copy submodule configs into config folder.
+    into('config') {from fileTree('Voltz-Configs/config')}
+    into('scripts') {from fileTree('Voltz-Configs/scripts')}
+    into('config') {from fileTree('Voltz-Configs/serverconfig')}
+    
+    //Copys cauldron specific stuff into the zip.
+    into('libraries') {from fileTree('cauldronInfo/libraries')}
+    into('') {from fileTree ('cauldronInfo')}
+    
+    // Copy over server only mods.
+    into('mods'){ from fileTree('servermods') }
+    
+    // Copy over fastcraft into mods folder.
+    //into('mods'){ from fastcraftOutput}
+    
+    // Copy over MC server properties, whitelists, scripts, etc.
+    from('./serverextra')
+    {
+        include '**/**'
+    }
+    
+    // Do not get empty directories from which no files are included.
+    includeEmptyDirs = false
+
+    // Print out each file that we package into the mod pack.
+    eachFile { file -> logger.lifecycle "packing $file" }
+
+    // Create base filename for our creation.
+    destinationDir = file 'output'
+    baseName = "./${config.archivesBaseName}-$pack_version-cauld"
+
+    // Log creation of server zip.
+    doLast { logger.lifecycle "Voltz Server Created: $archivePath" }
+}
+
+// --------------------------------
+// TASK: BUILD VOLTZ CLIENT CONFIGS
+// --------------------------------
+
+task ("voltzSolder-config-client", type: Zip)
+{
+    group = 'modpack'
+    description = 'Builds a Voltz Solder client configs zip'
+    
+    // Grab all the files that makeup a server installation.
+    from('.')
+    {
+        include 'config/**'
+    }
+
+    // Copy submodule configs into config folder.
+    into('config') {from fileTree('Voltz-Configs/config')}
+    into('scripts') {from fileTree('Voltz-Configs/scripts')}
+    into('config') {from fileTree('Voltz-Configs/clientconfig')}
+    
+    // Print out each file that we package into the mod pack.
+    eachFile { file -> logger.lifecycle "packing $file" }
+    
+    // Create base filename for our creation.
+    destinationDir = file 'output'
+    baseName = "./z-${config.archivesBaseName}-client-configs-$pack_version"
+}
+
+// --------------------------------
+// TASK: BUILD VOLTZ SERVER CONFIGS
+// --------------------------------
+
+task ("voltzSolder-config-server", type: Zip)
+{
+    group = 'modpack'
+    description = 'Builds a Voltz Solder server configs zip'
+    
+    // Grab all the files that makeup a server installation.
+    from('.')
+    {
+        include 'config/**'
+    }
+
+    // Copy submodule configs into config folder.
+    into('config') {from fileTree('Voltz-Configs/config')}
+    into('scripts') {from fileTree('Voltz-Configs/scripts')}
+    into('config') {from fileTree('Voltz-Configs/serverconfig')}
+    
+    // Print out each file that we package into the mod pack.
+    eachFile { file -> logger.lifecycle "packing $file" }
+    
+    // Create base filename for our creation.
+    destinationDir = file 'output'
+    baseName = "./z-${config.archivesBaseName}-server-configs-$pack_version"
+}
+
+// ------------------------
+// TASK: UNZIP VOLTZ CLIENT
+// ------------------------
+
+task ("unzipClient", type: Copy)
+{
+    from project.zipTree("./output/Voltz-${pack_version}-client.zip")
+    
+    //Determine the destination directory later.
+    into ("./output/Voltz-$pack_version-client")
+    
+    // Print out each file that we package into the mod pack.
+    eachFile { file -> logger.lifecycle "unpacking $file" }
+}
+
+// ------------------------
+// TASK: UNZIP VOLTZ SERVER
+// ------------------------
+
+task ("unzipServer", type: Copy)
+{
+    from project.zipTree("./output/Voltz-${pack_version}-server.zip")
+    
+    //Determine the destination directory later.
+    into ("./output/Voltz-$pack_version-server")
+    
+    // Print out each file that we package into the mod pack.
+    eachFile { file -> logger.lifecycle "unpacking $file" }
+}

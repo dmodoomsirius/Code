@@ -1,14 +1,14 @@
 from cloudbot import hook
 
 
-               
 @hook.command("bbmstaff")
 def bbmStaff(text, message, chan):
-    if chan in ("#BBM-bots", "#BBM-Dev", "#BBM-Packs", "#BuiltBrokenModding", "#BuiltBroken"):
-                message("Owners: Dmodoomsirius, DarkGuardsman");
-                message("textureArtist: Morton0000");
-                message("Developers: Snow, Hennamann")
-    message("Command can only be run in Official BBM Channels. Join #bbm-bots to run the command.")
+    if chan in ("#bbm-bots", "#bbm-dev", "#bbm-packs", "#builtbrokenmodding", "#builtbroken"):
+        message("Owners: Dmodoomsirius, DarkGuardsman");
+        message("textureArtist: Morton0000");
+        message("Developers: Snow, Hennamann")
+    else:
+        message("Command can only be run in Official BBM Channels. Join #bbm-bots to run the command.")
 
     
     
