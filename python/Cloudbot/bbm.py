@@ -8,7 +8,7 @@ def bbmStaff(text, message, chan):
             message("Owners: Dmodoomsirius, DarkGuardsman");
             #message("Texture Artist: Morton0000");
             message("Senior Developers: Kolatra")
-            message("Junior Developers: shobu9, TheCowGod, Hennamann")
+            message("Junior Developers: TheCowGod, Hennamann")
     else:
             message("Command can only be run in Official BBM Channels. Join #bbm-bots to run the command.")
 
